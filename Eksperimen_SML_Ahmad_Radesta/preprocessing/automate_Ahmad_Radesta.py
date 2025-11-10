@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
@@ -7,9 +8,6 @@ from sklearn.preprocessing import StandardScaler
 # ---------------------------------------------
 
 def load_dataset(path: str) -> pd.DataFrame:
-    """
-    Load dataset from CSV file.
-    """
     try:
         df = pd.read_csv(path)
         print(f"[INFO] Dataset loaded successfully: {df.shape[0]} rows, {df.shape[1]} columns.")
@@ -19,15 +17,11 @@ def load_dataset(path: str) -> pd.DataFrame:
 
 
 def remove_outliers_iqr(df: pd.DataFrame, numeric_cols: list) -> pd.DataFrame:
-    """
-    Remove outliers using IQR method.
-    Only applied to numeric columns that truly exist.
-    """
     df_clean = df.copy()
 
     for col in numeric_cols:
         if col not in df_clean.columns:
-            print(f"[WARNING] Column '{col}' not found. Skipping outlier removal.")
+            print(f"[WARNING] Column '{col}' not found. Skipping.")
             continue
 
         Q1 = df_clean[col].quantile(0.25)
@@ -40,32 +34,23 @@ def remove_outliers_iqr(df: pd.DataFrame, numeric_cols: list) -> pd.DataFrame:
         df_clean = df_clean[(df_clean[col] >= lower) & (df_clean[col] <= upper)]
         after = df_clean.shape[0]
 
-        print(f"[INFO] Outlier removal for {col}: {before - after} rows removed.")
+        print(f"[INFO] Outliers removed from {col}: {before - after}")
 
     return df_clean
 
 
 def encode_categorical(df: pd.DataFrame, categorical_cols: list) -> pd.DataFrame:
-    """
-    Apply One-Hot Encoding to categorical features.
-    Drop columns that do not exist to avoid errors.
-    """
-    cols_found = [c for c in categorical_cols if c in df.columns]
-
-    if len(cols_found) < len(categorical_cols):
-        missing = set(categorical_cols) - set(cols_found)
+    present = [c for c in categorical_cols if c in df.columns]
+    if len(present) < len(categorical_cols):
+        missing = set(categorical_cols) - set(present)
         print(f"[WARNING] Missing categorical columns skipped: {missing}")
 
-    df_encoded = pd.get_dummies(df, columns=cols_found, drop_first=True)
+    df = pd.get_dummies(df, columns=present, drop_first=True)
     print("[INFO] One-Hot Encoding applied.")
-
-    return df_encoded
+    return df
 
 
 def scale_features(X: pd.DataFrame):
-    """
-    Standardize numerical features.
-    """
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
     print("[INFO] Feature scaling completed.")
@@ -73,16 +58,6 @@ def scale_features(X: pd.DataFrame):
 
 
 def preprocess_pipeline(path: str):
-    """
-    Full preprocessing pipeline:
-    1. Load dataset
-    2. Remove outliers
-    3. Encode categorical
-    4. Train-test split
-    5. Scale features
-    6. Save processed dataset
-    """
-
     df = load_dataset(path)
 
     numeric_cols = ['Age', 'RestingBP', 'Cholesterol', 'FastingBS', 'MaxHR', 'Oldpeak']
@@ -91,36 +66,35 @@ def preprocess_pipeline(path: str):
     df = remove_outliers_iqr(df, numeric_cols)
     df = encode_categorical(df, categorical_cols)
 
-    # safety check
     if "HeartDisease" not in df.columns:
-        raise KeyError("[ERROR] 'HeartDisease' column not found in dataset.")
+        raise KeyError("[ERROR] 'HeartDisease' not in dataset.")
 
-    X = df.drop('HeartDisease', axis=1)
-    y = df['HeartDisease']
+    X = df.drop("HeartDisease", axis=1)
+    y = df["HeartDisease"]
 
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.3, stratify=y, random_state=42
+        X, y, test_size=0.3, random_state=42, stratify=y
     )
-
-    print(f"[INFO] Train-test split completed: {X_train.shape[0]} train samples")
+    print(f"[INFO] Train-test split completed: {X_train.shape[0]} training samples.")
 
     X_train_scaled, scaler = scale_features(X_train)
     X_test_scaled = scaler.transform(X_test)
 
-    processed_df = pd.DataFrame(X_train_scaled)
-    processed_df["HeartDisease"] = y_train.values
-
+    # Save inside existing Preprocessing folder
     output_path = "processed_heart_failure_data.csv"
-    processed_df.to_csv(output_path, index=False)
+    pd.DataFrame(X_train_scaled).assign(HeartDisease=y_train.values).to_csv(
+        output_path, index=False
+    )
 
-    print(f"[INFO] Processed dataset saved at: {output_path}")
-    print("[INFO] Preprocessing pipeline finished successfully.")
+    print(f"[INFO] Processed dataset saved to: {output_path}")
+    print("[INFO] Preprocessing finished successfully.")
 
     return X_train_scaled, X_test_scaled, y_train, y_test, scaler
 
 
 # ---------------------------------------------
-# Example execution (comment / uncomment)
+# EXECUTION
 # ---------------------------------------------
-X_train, X_test, y_train, y_test, scaler = preprocess_pipeline("../Heart Failure Prediction Dataset.csv")
-print("Preprocessing completed.")
+if __name__ == "__main__":
+    preprocess_pipeline("../Heart Failure Prediction Dataset.csv")
+    print("[INFO] Preprocessing completed.")
