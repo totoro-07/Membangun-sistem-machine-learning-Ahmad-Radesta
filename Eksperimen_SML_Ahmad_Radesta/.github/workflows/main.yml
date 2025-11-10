@@ -1,0 +1,52 @@
+name: Run Preprocessing Pipeline
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "preprocessing/**"
+      - "namadataset_raw/**"
+
+jobs:
+  preprocess:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pandas scikit-learn
+
+    - name: Run preprocessing script
+      run: |
+        python preprocessing/automate_Ahmad_Radesta.py
+
+    - name: Move processed dataset
+      run: |
+        mkdir -p preprocessing/namadataset_preprocessing
+        mv preprocessing/processed_heart_failure_data.csv preprocessing/namadataset_preprocessing/processed_heart_failure_data.csv
+
+    - name: Commit and push processed dataset
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git add preprocessing/namadataset_preprocessing/*
+        git commit -m "Update preprocessed dataset [auto]"
+        git push
+      continue-on-error: true
+
+    - name: Upload processed dataset as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: processed_dataset
+        path: preprocessing/namadataset_preprocessing/processed_heart_failure_data.csv
