@@ -27,7 +27,7 @@ jobs:
 
     - name: Run preprocessing script
       run: |
-        python preprocessing/automate_Ahmad_Radesta.py
+        python Eksperimen_SML_Ahmad_Radesta/preprocessing/automate_Ahmad_Radesta.py
 
     - name: Commit processed dataset
       run: |
