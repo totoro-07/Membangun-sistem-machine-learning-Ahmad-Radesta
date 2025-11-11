@@ -7,6 +7,21 @@ from sklearn.preprocessing import StandardScaler
 # AUTOMATED PREPROCESSING PIPELINE
 # ---------------------------------------------
 
+def get_dataset_path() -> str:
+    """
+    Dataset disimpan di folder yang sama dengan folder utama Eksperimen_SML_Ahmad_Radesta.
+    Lokasi file: /Eksperimen_SML_Ahmad_Radesta/Heart Failure Prediction Dataset.csv
+    """
+    base_dir = os.path.dirname(os.path.dirname(__file__))  # folder Eksperimen_SML_Ahmad_Radesta
+    dataset_filename = "Heart Failure Prediction Dataset.csv"
+    dataset_path = os.path.join(base_dir, dataset_filename)
+
+    if not os.path.exists(dataset_path):
+        raise FileNotFoundError(f"[ERROR] Dataset not found at: {dataset_path}")
+
+    return dataset_path
+
+
 def load_dataset(path: str) -> pd.DataFrame:
     try:
         df = pd.read_csv(path)
@@ -80,8 +95,10 @@ def preprocess_pipeline(path: str):
     X_train_scaled, scaler = scale_features(X_train)
     X_test_scaled = scaler.transform(X_test)
 
-    # Save inside existing Preprocessing folder
-    output_path = "processed_heart_failure_data.csv"
+    # Save processed file inside the same preprocessing directory
+    output_dir = os.path.dirname(__file__)
+    output_path = os.path.join(output_dir, "processed_heart_failure_data.csv")
+
     pd.DataFrame(X_train_scaled).assign(HeartDisease=y_train.values).to_csv(
         output_path, index=False
     )
@@ -96,5 +113,6 @@ def preprocess_pipeline(path: str):
 # EXECUTION
 # ---------------------------------------------
 if __name__ == "__main__":
-    preprocess_pipeline("../Heart Failure Prediction Dataset.csv")
+    dataset_path = get_dataset_path()
+    preprocess_pipeline(dataset_path)
     print("[INFO] Preprocessing completed.")
