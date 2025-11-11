@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - "preprocessing/**"
-      - "*.csv"          # dataset di root berubah, workflow jalan
+      - "Eksperimen_SML_Ahmad_Radesta/preprocessing/**"
+      - "Eksperimen_SML_Ahmad_Radesta/*.csv"
 
 jobs:
   preprocess:
@@ -33,7 +33,7 @@ jobs:
       run: |
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
-        git add preprocessing/processed_heart_failure_data.csv
+        git add Eksperimen_SML_Ahmad_Radesta/preprocessing/processed_heart_failure_data.csv
         git commit -m "Auto update processed dataset"
         git push
       continue-on-error: true
@@ -42,4 +42,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: processed_dataset
-        path: preprocessing/processed_heart_failure_data.csv
+        path: Eksperimen_SML_Ahmad_Radesta/preprocessing/processed_heart_failure_data.csv
