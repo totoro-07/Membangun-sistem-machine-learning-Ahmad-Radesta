@@ -6,41 +6,52 @@ on:
       - main
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   retrain:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
       - name: Install dependencies
         run: |
-          pip install mlflow scikit-learn pandas
+          python -m pip install --upgrade pip
+          pip install mlflow scikit-learn pandas docker
 
-      - name: Run MLflow Project
+      - name: Run MLflow project
+        working-directory: Workflow-CI/MLProject
         run: |
-          cd MLProject
+          echo "Running MLflow project..."
           mlflow run . -e main
-      
+
       - name: Build and push Docker image
         run: |
-          mlflow models build-docker -m MLProject/mlruns --name heart-failure-model
-          docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+          echo "Building and pushing Docker image..."
+          MODEL_PATH=$(find Workflow-CI/MLProject/mlruns -type d -name "artifacts" | head -n 1)
+          if [ -z "$MODEL_PATH" ]; then
+            echo "Model artifacts not found!"
+            exit 1
+          fi
+          mlflow models build-docker -m $MODEL_PATH -n heart-failure-model
+          echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
           docker tag heart-failure-model:latest ${{ secrets.DOCKERHUB_USERNAME }}/heart-failure-model:latest
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/heart-failure-model:latest
 
-
-      - name: Save model artifact
+      - name: Save model artifacts
         run: |
+          echo "Saving model artifacts..."
           mkdir -p artifacts
-          cp -r MLProject/mlruns artifacts/
-          echo "Model artifacts saved successfully."
+          cp -r Workflow-CI/MLProject/mlruns artifacts/
+          echo "Artifacts saved successfully."
 
       - name: Upload artifact to GitHub
         uses: actions/upload-artifact@v4
