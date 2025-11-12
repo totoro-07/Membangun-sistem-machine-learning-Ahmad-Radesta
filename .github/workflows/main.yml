@@ -11,6 +11,9 @@ on:
       - "Eksperimen_SML_Ahmad_Radesta/*.csv"
 
 jobs:
+  call-internal-workflow:
+    uses: ./Workflow-CI/.github/workflows/ci.yml
+    
   preprocess:
     runs-on: ubuntu-latest
 
