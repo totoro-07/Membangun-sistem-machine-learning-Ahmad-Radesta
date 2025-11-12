@@ -1,0 +1,14 @@
+artifact_uri: file:///E:/Dicoding/Membangun%20sistem%20machine%20learning/Membangun_model/mlruns/715403605213066087/ef74b5f2586b41f49014381e5a43fc8e/artifacts
+end_time: 1762955626182
+entry_point_name: ''
+experiment_id: '715403605213066087'
+lifecycle_stage: active
+run_id: ef74b5f2586b41f49014381e5a43fc8e
+run_name: capricious-trout-892
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1762955617012
+status: 3
+tags: []
+user_id: rages
