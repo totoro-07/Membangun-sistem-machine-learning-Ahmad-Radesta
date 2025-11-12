@@ -49,4 +49,13 @@ jobs:
 
   retrain:
     needs: preprocess
-    uses: ./Workflow-CI/.github/workflows/ci.yml
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run MLflow retrain pipeline
+        run: |
+          echo "Running MLflow retrain workflow..."
+          bash Workflow-CI/.github/workflows/ci.yml
