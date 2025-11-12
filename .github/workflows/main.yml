@@ -15,38 +15,34 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.10"
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pandas scikit-learn
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pandas scikit-learn
 
-      - name: Run preprocessing script
-        run: |
-          python Eksperimen_SML_Ahmad_Radesta/preprocessing/automate_Ahmad_Radesta.py
+    - name: Run preprocessing script
+      run: |
+        python Eksperimen_SML_Ahmad_Radesta/preprocessing/automate_Ahmad_Radesta.py
 
-      - name: Commit processed dataset
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add Eksperimen_SML_Ahmad_Radesta/preprocessing/processed_heart_failure_data.csv
-          git commit -m "Auto update processed dataset"
-          git push
-        continue-on-error: true
+    - name: Commit processed dataset
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git add Eksperimen_SML_Ahmad_Radesta/preprocessing/processed_heart_failure_data.csv
+        git commit -m "Auto update processed dataset"
+        git push
+      continue-on-error: true
 
-      - name: Upload processed dataset artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: processed_dataset
-          path: Eksperimen_SML_Ahmad_Radesta/preprocessing/processed_heart_failure_data.csv
-
-  retrain:
-    needs: preprocess
-    uses: ./Workflow-CI/.github/workflows/ci.yml
+    - name: Upload processed dataset artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: processed_dataset
+        path: Eksperimen_SML_Ahmad_Radesta/preprocessing/processed_heart_failure_data.csv
