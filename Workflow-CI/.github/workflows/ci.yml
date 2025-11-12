@@ -2,18 +2,10 @@ name: MLflow CI Workflow
 
 on:
   workflow_call:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
-
-permissions:
-  contents: write
 
 jobs:
   retrain:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -25,9 +17,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          echo "Installing dependencies..."
           python -m pip install --upgrade pip
-          pip install mlflow pandas scikit-learn docker
+          pip install mlflow scikit-learn pandas docker
 
       - name: Run MLflow project
         working-directory: Workflow-CI/MLProject
@@ -37,22 +28,8 @@ jobs:
 
       - name: Save mlruns artifacts
         run: |
-          echo "Saving mlruns..."
           mkdir -p artifacts
           cp -r Workflow-CI/MLProject/mlruns artifacts/
-
-      - name: Build and push Docker image
-        run: |
-          echo "Building Docker image..."
-          MODEL_PATH=$(find Workflow-CI/MLProject/mlruns -type d -name "artifacts" | head -n 1)
-          if [ -z "$MODEL_PATH" ]; then
-            echo "Model artifacts not found!"
-            exit 1
-          fi
-          mlflow models build-docker -m $MODEL_PATH -n heart-failure-model
-          echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
-          docker tag heart-failure-model:latest ${{ secrets.DOCKERHUB_USERNAME }}/heart-failure-model:latest
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/heart-failure-model:latest
 
       - name: Upload artifact to GitHub
         uses: actions/upload-artifact@v4
