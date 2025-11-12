@@ -26,11 +26,15 @@ X_train, X_test, y_train, y_test = train_test_split(
 
 # === MLflow settings (Basic) ===
 mlflow.set_experiment("heart_failure_experiment_basic")
-mlflow.sklearn.autolog()  # autolog aktif
+mlflow.sklearn.autolog()
 
-with mlflow.start_run():
-    model = RandomForestClassifier()
-    model.fit(X_train, y_train)
+# Jalankan model tanpa `mlflow.start_run()` (sudah otomatis dibuat oleh MLflow CLI)
+model = RandomForestClassifier()
+model.fit(X_train, y_train)
 
-    acc = model.score(X_test, y_test)
-    print("[INFO] Accuracy:", acc)
+acc = model.score(X_test, y_test)
+print("[INFO] Accuracy:", acc)
+
+# Log manual jika ingin tambahan info
+mlflow.log_metric("accuracy", acc)
+mlflow.sklearn.log_model(model, "model")
