@@ -1,10 +1,7 @@
 name: MLflow CI Workflow
 
 on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
+  workflow_call:
 
 permissions:
   contents: write
