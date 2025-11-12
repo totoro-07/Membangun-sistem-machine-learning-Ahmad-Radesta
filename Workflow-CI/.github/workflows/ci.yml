@@ -3,9 +3,13 @@ name: MLflow CI Workflow
 on:
   workflow_call:
 
+permissions:
+  contents: write
+
 jobs:
   retrain:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -13,10 +17,11 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: "3.10"
 
       - name: Install dependencies
         run: |
+          echo "Installing dependencies..."
           python -m pip install --upgrade pip
           pip install mlflow scikit-learn pandas docker
 
@@ -28,6 +33,7 @@ jobs:
 
       - name: Save mlruns artifacts
         run: |
+          echo "Saving mlruns artifacts..."
           mkdir -p artifacts
           cp -r Workflow-CI/MLProject/mlruns artifacts/
 

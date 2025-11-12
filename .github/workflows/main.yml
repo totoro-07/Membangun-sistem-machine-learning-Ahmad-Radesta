@@ -30,14 +30,16 @@ jobs:
 
       - name: Run preprocessing script
         run: |
+          echo "Running preprocessing script..."
           python Eksperimen_SML_Ahmad_Radesta/preprocessing/automate_Ahmad_Radesta.py
 
       - name: Commit processed dataset
         run: |
+          echo "Committing processed dataset..."
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add Eksperimen_SML_Ahmad_Radesta/preprocessing/processed_heart_failure_data.csv
-          git commit -m "Auto update processed dataset"
+          git commit -m "Auto update processed dataset" || echo "No changes to commit"
           git push
         continue-on-error: true
 
@@ -55,7 +57,30 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Run MLflow retrain pipeline
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
         run: |
-          echo "Running MLflow retrain workflow..."
-          bash Workflow-CI/.github/workflows/ci.yml
+          python -m pip install --upgrade pip
+          pip install mlflow scikit-learn pandas docker
+
+      - name: Run MLflow project
+        working-directory: Workflow-CI/MLProject
+        run: |
+          echo "Running MLflow project..."
+          mlflow run . --env-manager=local
+
+      - name: Save model artifacts
+        run: |
+          echo "Saving model artifacts..."
+          mkdir -p artifacts
+          cp -r Workflow-CI/MLProject/mlruns artifacts/
+
+      - name: Upload model artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: mlflow-artifacts
+          path: artifacts
