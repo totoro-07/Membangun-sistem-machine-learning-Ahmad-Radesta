@@ -1,0 +1,14 @@
+artifact_uri: file:///E:/Dicoding/Membangun%20sistem%20machine%20learning/Membangun_model/mlruns/715403605213066087/8403b15375bf44829fe00e3c6342f813/artifacts
+end_time: 1762969848574
+entry_point_name: ''
+experiment_id: '715403605213066087'
+lifecycle_stage: active
+run_id: 8403b15375bf44829fe00e3c6342f813
+run_name: gentle-toad-672
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1762969836850
+status: 3
+tags: []
+user_id: rages

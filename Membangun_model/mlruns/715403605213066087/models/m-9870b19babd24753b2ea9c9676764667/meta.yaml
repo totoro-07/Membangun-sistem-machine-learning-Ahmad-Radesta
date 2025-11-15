@@ -1,0 +1,10 @@
+artifact_location: file:///E:/Dicoding/Membangun%20sistem%20machine%20learning/Membangun_model/mlruns/715403605213066087/models/m-9870b19babd24753b2ea9c9676764667/artifacts
+creation_timestamp: 1762970400862
+experiment_id: '715403605213066087'
+last_updated_timestamp: 1762970405253
+model_id: m-9870b19babd24753b2ea9c9676764667
+model_type: null
+name: model
+source_run_id: 8fb54b61e86e48f381336538ffce902d
+status: 2
+status_message: null

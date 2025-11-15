@@ -1,0 +1,14 @@
+artifact_uri: file:///E:/Dicoding/Membangun%20sistem%20machine%20learning/Membangun_model/mlruns/715403605213066087/84244f48bfdf405e8ff8ef694be5e1c1/artifacts
+end_time: 1762970317368
+entry_point_name: ''
+experiment_id: '715403605213066087'
+lifecycle_stage: active
+run_id: 84244f48bfdf405e8ff8ef694be5e1c1
+run_name: nebulous-mouse-826
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1762970308167
+status: 3
+tags: []
+user_id: rages

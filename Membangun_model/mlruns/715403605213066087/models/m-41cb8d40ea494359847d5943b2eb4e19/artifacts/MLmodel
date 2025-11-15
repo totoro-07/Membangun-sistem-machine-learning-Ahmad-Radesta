@@ -1,0 +1,42 @@
+artifact_path: file:///E:/Dicoding/Membangun%20sistem%20machine%20learning/Membangun_model/mlruns/715403605213066087/models/m-41cb8d40ea494359847d5943b2eb4e19/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    predict_fn: predict
+    python_version: 3.12.0
+  sklearn:
+    code: null
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 1.7.0
+is_signature_from_type_hint: false
+mlflow_version: 3.5.1
+model_id: m-41cb8d40ea494359847d5943b2eb4e19
+model_size_bytes: 905600
+model_uuid: m-41cb8d40ea494359847d5943b2eb4e19
+prompts: null
+run_id: 2dd8568f66874fa9bf8bcf6a2104b4f4
+saved_input_example_info:
+  artifact_path: input_example.json
+  pandas_orient: split
+  serving_input_path: serving_input_example.json
+  type: dataframe
+signature:
+  inputs: '[{"type": "double", "name": "0", "required": true}, {"type": "double",
+    "name": "1", "required": true}, {"type": "double", "name": "2", "required": true},
+    {"type": "double", "name": "3", "required": true}, {"type": "double", "name":
+    "4", "required": true}, {"type": "double", "name": "5", "required": true}, {"type":
+    "double", "name": "6", "required": true}, {"type": "double", "name": "7", "required":
+    true}, {"type": "double", "name": "8", "required": true}, {"type": "double", "name":
+    "9", "required": true}, {"type": "double", "name": "10", "required": true}, {"type":
+    "double", "name": "11", "required": true}, {"type": "double", "name": "12", "required":
+    true}, {"type": "double", "name": "13", "required": true}, {"type": "double",
+    "name": "14", "required": true}]'
+  outputs: '[{"type": "long", "required": true}]'
+  params: null
+type_hint_from_example: false
+utc_time_created: '2025-11-12 18:03:25.222693'
